@@ -1,4 +1,4 @@
-import datetime
+from datetime import date, datetime, timedelta
 from sqlalchemy import Column, Integer, String, Boolean, func, Table, DateTime
 from sqlalchemy.orm import Mapped, relationship, DeclarativeBase
 from sqlalchemy.orm import mapped_column
@@ -21,6 +21,13 @@ class Contact(Base):
     # birthday: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     birthday: Mapped[datetime.date] = mapped_column(Date)
 
+    created_at: Mapped[date] = mapped_column('created_at', DateTime, default=func.now(), nullable=True)
+    updated_at: Mapped[date] = mapped_column('updated_at', DateTime, default=func.now(), onupdate=func.now(),
+                                             nullable=True)
+
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'), nullable=True)
+    user: Mapped["User"] = relationship("User", backref="todos", lazy="joined")
+
     notes = relationship("Note", secondary="contact_note_association")
 
 
@@ -39,6 +46,18 @@ class Tag(Base):
     __tablename__ = "tags"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(25), nullable=False, unique=True)
+
+
+class User(Base):
+    __tablename__ = 'users'
+    id: Mapped[int] = mapped_column(primary_key=True)
+    username: Mapped[str] = mapped_column(String(50))
+    email: Mapped[str] = mapped_column(String(150), nullable=False, unique=True)
+    password: Mapped[str] = mapped_column(String(255), nullable=False)
+    avatar: Mapped[str] = mapped_column(String(255), nullable=True)
+    refresh_token: Mapped[str] = mapped_column(String(255), nullable=True)
+    created_at: Mapped[date] = mapped_column('created_at', DateTime, default=func.now())
+    updated_at: Mapped[date] = mapped_column('updated_at', DateTime, default=func.now(), onupdate=func.now())
 
 
 note_tag_association = Table(
