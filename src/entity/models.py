@@ -58,6 +58,7 @@ class User(Base):
     refresh_token: Mapped[str] = mapped_column(String(255), nullable=True)
     created_at: Mapped[date] = mapped_column('created_at', DateTime, default=func.now())
     updated_at: Mapped[date] = mapped_column('updated_at', DateTime, default=func.now(), onupdate=func.now())
+    confirmed: Mapped[bool] = mapped_column(Boolean, default=False, nullable=True)
 
 
 note_tag_association = Table(
