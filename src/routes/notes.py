@@ -15,6 +15,15 @@ router = APIRouter(prefix='/notes', tags=["notes"])
 @router.get("/", response_model=List[NoteResponse])
 async def read_notes(skip: int = 0, limit: int = 100, db: AsyncSession = Depends(get_db),
                      user: User = Depends(auth_service.get_current_user)):
+    """
+    Retrieve a list of notes.
+
+    :param skip: Number of notes to skip.
+    :param limit: Maximum number of notes to retrieve.
+    :param db: AsyncSession instance for database interaction.
+    :param user: Current authenticated user.
+    :return: List of NoteResponse objects.
+    """
     notes = await repository_notes.get_notes(skip, limit, db)
     return notes
 
@@ -22,6 +31,14 @@ async def read_notes(skip: int = 0, limit: int = 100, db: AsyncSession = Depends
 @router.get("/{note_id}", response_model=NoteResponse)
 async def read_note(note_id: int, db: AsyncSession = Depends(get_db),
                     user: User = Depends(auth_service.get_current_user)):
+    """
+    Retrieve a specific note by ID.
+
+    :param note_id: ID of the note to retrieve.
+    :param db: AsyncSession instance for database interaction.
+    :param user: Current authenticated user.
+    :return: NoteResponse object.
+    """
     note = await repository_notes.get_note(note_id, db)
     if note is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Note not found")
@@ -31,12 +48,29 @@ async def read_note(note_id: int, db: AsyncSession = Depends(get_db),
 @router.post("/", response_model=NoteResponse)
 async def create_note(body: NoteModel, db: AsyncSession = Depends(get_db),
                       user: User = Depends(auth_service.get_current_user)):
+    """
+    Create a new note.
+
+    :param body: Data representing the new note.
+    :param db: AsyncSession instance for database interaction.
+    :param user: Current authenticated user.
+    :return: Newly created NoteResponse object.
+    """
     return await repository_notes.create_note(body, db)
 
 
 @router.put("/{note_id}", response_model=NoteResponse)
 async def update_note(body: NoteUpdate, note_id: int, db: AsyncSession = Depends(get_db),
                       user: User = Depends(auth_service.get_current_user)):
+    """
+    Update an existing note by ID.
+
+    :param note_id: ID of the note to update.
+    :param body: Data representing the updated note information.
+    :param db: AsyncSession instance for database interaction.
+    :param user: Current authenticated user.
+    :return: Updated NoteResponse object.
+    """
     note = await repository_notes.update_note(note_id, body, db)
     if note is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Note not found")
@@ -46,6 +80,15 @@ async def update_note(body: NoteUpdate, note_id: int, db: AsyncSession = Depends
 @router.patch("/{note_id}", response_model=NoteResponse)
 async def update_status_note(body: NoteStatusUpdate, note_id: int, db: AsyncSession = Depends(get_db),
                              user: User = Depends(auth_service.get_current_user)):
+    """
+    Update the status of a note by ID.
+
+    :param note_id: ID of the note to update.
+    :param body: Data representing the updated note status.
+    :param db: AsyncSession instance for database interaction.
+    :param user: Current authenticated user.
+    :return: Updated NoteResponse object.
+    """
     note = await repository_notes.update_status_note(note_id, body, db)
     if note is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Note not found")
@@ -55,6 +98,14 @@ async def update_status_note(body: NoteStatusUpdate, note_id: int, db: AsyncSess
 @router.delete("/{note_id}", response_model=NoteResponse)
 async def remove_note(note_id: int, db: AsyncSession = Depends(get_db),
                       user: User = Depends(auth_service.get_current_user)):
+    """
+    Delete a note by ID.
+
+    :param note_id: ID of the note to delete.
+    :param db: AsyncSession instance for database interaction.
+    :param user: Current authenticated user.
+    :return: Deleted NoteResponse object.
+    """
     note = await repository_notes.remove_note(note_id, db)
     if note is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Note not found")

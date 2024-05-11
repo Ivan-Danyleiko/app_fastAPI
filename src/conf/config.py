@@ -5,8 +5,8 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    SQLALCHEMY_DATABASE_URL: str = "postgresql+asyncpg://postgres:567234@localhost:5432/fine_app"
-    KEY_JWT: str = "12345678"
+    SQLALCHEMY_DATABASE_URL: str = "postgresql+asyncpg://postgres:00000@localhost:666/fine_app"
+    KEY_JWT: str = "123123"
     ALG: str = "HS256"
     MAIL_USERNAME: EmailStr = "postgres@gmail.com"
     MAIL_PASSWORD: str = "postgres"

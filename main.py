@@ -1,3 +1,4 @@
+
 import redis.asyncio as redis
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi_limiter import FastAPILimiter
@@ -32,17 +33,32 @@ app.include_router(contacts.router, prefix='/api')
 
 @app.on_event("startup")
 async def startup():
+    """
+    Startup event handler.
+    Initialize Redis connection and FastAPILimiter.
+    """
     r = await redis.Redis(host=config.REDIS_DOMAIN, port=config.REDIS_PORT, db=0, password=config.REDIS_PASSWORD)
     await FastAPILimiter.init(r)
 
 
 @app.get("/")
 def index():
+    """
+    Home endpoint.
+    Returns a welcome message.
+    """
     return {"message": "Contacts Application"}
 
 
 @app.get("/api/healthecker")
 async def healthchecker(db: AsyncSession = Depends(get_db)):
+    """
+    Health checker endpoint.
+    Checks database connection status.
+
+    :param db: AsyncSession instance for database interaction.
+    :return: Health status message.
+    """
     try:
         # Make request
         result = await db.execute(text("SELECT 1;"))
