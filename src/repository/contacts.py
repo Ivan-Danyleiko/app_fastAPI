@@ -80,12 +80,17 @@ async def update_contact(contact_id: int, body: ContactBase, db: AsyncSession, u
     stmt = select(Contact).filter_by(id=contact_id, user=user)
     result = await db.execute(stmt)
     contact = result.scalar_one_or_none()
+
     if contact:
-        contact.title = body.title
-        contact.description = body.description
-        contact.completed = body.completed
+        contact.name = body.name
+        contact.lastname = body.lastname
+        contact.email = body.email
+        contact.phone = body.phone
+        contact.address = body.address
+        contact.birthday = body.birthday
         await db.commit()
         await db.refresh(contact)
+
     return contact
 
 

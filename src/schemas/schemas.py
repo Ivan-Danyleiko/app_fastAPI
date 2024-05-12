@@ -1,6 +1,6 @@
 from datetime import datetime, date
 from typing import List, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class TagModel(BaseModel):
@@ -59,6 +59,5 @@ class ContactUpdate(ContactBase):
 
 class ContactResponse(ContactBase):
     id: int
+    model_config = ConfigDict(from_attributes = True)  # noqa
 
-    class Config:
-        from_attributes = True
